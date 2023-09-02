@@ -1,16 +1,15 @@
+import { faker } from '@faker-js/faker'
 import {
 	BadRequestException,
 	Injectable,
 	NotFoundException,
-	UnauthorizedException,
+	UnauthorizedException
 } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
-import { AuthDto } from './dto/auth.dto'
-import { faker } from '@faker-js/faker'
-import { hash } from 'argon2'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@prisma/client'
-import { verify } from 'argon2'
+import { hash, verify } from 'argon2'
+import { PrismaService } from 'src/prisma.service'
+import { AuthDto } from './dto/auth.dto'
 
 @Injectable()
 export class AuthService {
@@ -26,15 +25,15 @@ export class AuthService {
 
 		const user = await this.prisma.user.findUnique({
 			where: {
-				id: result.id,
-			},
+				id: result.id
+			}
 		})
 
 		const tokens = await this.issueTokens(user.id)
 
 		return {
 			user: this.returnUserFields(user),
-			...tokens,
+			...tokens
 		}
 	}
 
@@ -44,15 +43,15 @@ export class AuthService {
 
 		return {
 			user: this.returnUserFields(user),
-			...tokens,
+			...tokens
 		}
 	}
 
 	async register(dto: AuthDto) {
 		const oldUser = await this.prisma.user.findUnique({
 			where: {
-				email: dto.email,
-			},
+				email: dto.email
+			}
 		})
 
 		if (oldUser) throw new BadRequestException('User already exists')
@@ -63,15 +62,15 @@ export class AuthService {
 				name: faker.name.firstName(),
 				avatarPath: faker.image.avatar(),
 				phone: faker.phone.number('+375 (##) ###-##-##'),
-				password: await hash(dto.password),
-			},
+				password: await hash(dto.password)
+			}
 		})
 
 		const tokens = await this.issueTokens(user.id)
 
 		return {
 			user: this.returnUserFields(user),
-			...tokens,
+			...tokens
 		}
 	}
 
@@ -79,10 +78,10 @@ export class AuthService {
 		const data = { id: userId }
 
 		const accessToken = this.jwt.sign(data, {
-			expiresIn: '1h',
+			expiresIn: '1h'
 		})
 		const refreshToken = this.jwt.sign(data, {
-			expiresIn: '7d',
+			expiresIn: '7d'
 		})
 
 		return { accessToken, refreshToken }
@@ -91,15 +90,15 @@ export class AuthService {
 	private returnUserFields(user: User) {
 		return {
 			id: user.id,
-			email: user.email,
+			email: user.email
 		}
 	}
 
 	private async validateUser(dto: AuthDto) {
 		const user = await this.prisma.user.findUnique({
 			where: {
-				email: dto.email,
-			},
+				email: dto.email
+			}
 		})
 
 		if (!user) throw new NotFoundException('User not found')

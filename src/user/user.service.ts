@@ -3,11 +3,11 @@ import {
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
-import { UserDto } from './dto/user.dto'
-import { PrismaService } from 'src/prisma.service'
-import { returnUserObject } from './return-user.object'
 import { Prisma } from '@prisma/client'
 import { hash } from 'argon2'
+import { PrismaService } from 'src/prisma.service'
+import { UserDto } from './dto/user.dto'
+import { returnUserObject } from './return-user.object'
 
 @Injectable()
 export class UserService {
@@ -62,8 +62,6 @@ export class UserService {
 		if (!user) throw new NotFoundException('User not found!')
 
 		const isExists = user.favorites.some(product => product.id === productId)
-
-		console.log('USER', user)
 
 		await this.prisma.user.update({
 			where: { id: user.id },
