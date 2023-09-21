@@ -17,7 +17,6 @@ export class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
 
 	@Get('by-slug/:slug')
-	@Auth()
 	async getBySlug(@Param('slug') slug: string) {
 		return this.categoryService.bySlug(slug)
 	}
