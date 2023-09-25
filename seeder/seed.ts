@@ -19,11 +19,11 @@ const createProducts = async (quantity: number) => {
 				description: faker.commerce.productDescription(),
 				price: +faker.commerce.price(10, 999, 0),
 				images: Array.from({
-					length: faker.datatype.number({
+					length: faker.number.int({
 						min: 2,
 						max: 6
 					})
-				}).map(() => faker.image.imageUrl()),
+				}).map(() => `/uploads/${faker.number.int({min: 1, max: 5})}.jpg`),
 				category: {
 					create: {
 						name: categoryName,
@@ -33,26 +33,26 @@ const createProducts = async (quantity: number) => {
 				reviews: {
 					create: [
 						{
-							rating: faker.datatype.number({
+							rating: faker.number.int({
 								min: 1,
 								max: 5
 							}),
 							text: faker.lorem.paragraph(),
 							user: {
 								connect: {
-									id: 2
+									id: 1
 								}
 							}
 						},
 						{
-							rating: faker.datatype.number({
+							rating: faker.number.int({
 								min: 1,
 								max: 5
 							}),
 							text: faker.lorem.paragraph(),
 							user: {
 								connect: {
-									id: 2
+									id: 1
 								}
 							}
 						}

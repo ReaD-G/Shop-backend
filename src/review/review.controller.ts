@@ -15,16 +15,11 @@ import { ReviewService } from './review.service'
 
 @Controller('reviews')
 export class ReviewController {
-	constructor(private readonly reviewService: ReviewService) {}
-
-	@Get(':id')
-	@Auth()
-	async getById(@Param('id') id: string) {
-		return this.reviewService.byId(+id)
-	}
+	constructor(private reviewService: ReviewService) {}
 
 	@UsePipes(new ValidationPipe())
 	@Get()
+	@Auth('admin')
 	async getAll() {
 		return this.reviewService.getAll()
 	}

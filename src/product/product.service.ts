@@ -3,7 +3,9 @@ import { PrismaService } from 'src/prisma.service'
 import { ProductDto } from 'src/product/dto/product.dto'
 
 import { Prisma } from '@prisma/client'
+import { CategoryService } from 'src/category/category.service'
 import { PaginationService } from 'src/pagination/pagination.service'
+import { convertToNumber } from 'src/utils/convert-to-number'
 import { generateSlug } from 'src/utils/generate.slug'
 import { EnumProbuctSort, GetAllProbuctDto } from './dto/get-all.product.dto'
 import {
@@ -15,57 +17,18 @@ import {
 export class ProductService {
 	constructor(
 		private prisma: PrismaService,
-		private paginationService: PaginationService
+		private paginationService: PaginationService,
+		private categoryService: CategoryService
 	) {}
 
 	async getAll(dto: GetAllProbuctDto = {}) {
-		const { sort, searchTerm } = dto
-
-		const prismaSort: Prisma.ProductOrderByWithRelationInput[] = []
-
-		if (sort === EnumProbuctSort.LOW_PRICE) prismaSort.push({ price: 'asc' })
-		else if (sort === EnumProbuctSort.HIGH_PRICE) {
-			prismaSort.push({ price: 'desc' })
-		} else if (sort === EnumProbuctSort.NEWEST) {
-			prismaSort.push({ createdAt: 'desc' })
-		} else if (sort === EnumProbuctSort.OLDEST) {
-			prismaSort.push({ createdAt: 'asc' })
-		} else {
-			prismaSort.push({ createdAt: 'desc' })
-		}
-
-		const prismaSearchTermFilter: Prisma.ProductWhereInput = searchTerm
-			? {
-					OR: [
-						{
-							category: {
-								name: {
-									contains: searchTerm,
-									mode: 'insensitive'
-								}
-							}
-						},
-						{
-							name: {
-								contains: searchTerm,
-								mode: 'insensitive'
-							}
-						},
-						{
-							description: {
-								contains: searchTerm,
-								mode: 'insensitive'
-							}
-						}
-					]
-			  }
-			: {}
-
 		const { perPage, skip } = this.paginationService.getPagination(dto)
 
+		const filters = this.createFilter(dto)
+
 		const products = await this.prisma.product.findMany({
-			where: prismaSearchTermFilter,
-			orderBy: prismaSort,
+			where: filters,
+			orderBy: this.getSortOptions(dto.sort),
 			skip,
 			take: perPage,
 			select: returnProductObject
@@ -74,8 +37,119 @@ export class ProductService {
 		return {
 			products,
 			length: await this.prisma.product.count({
-				where: prismaSearchTermFilter
+				where: filters
 			})
+		}
+	}
+
+	private createFilter(dto: GetAllProbuctDto): Prisma.ProductWhereInput {
+		const filter: Prisma.ProductWhereInput[] = []
+
+		if (dto.searchTerm) filter.push(this.getSearchTermFilter(dto.searchTerm))
+		if (dto.ratings)
+			filter.push(
+				this.getRatingFilter(dto.ratings.split('|').map(rating => +rating))
+			)
+
+		if (dto.minPrice || dto.maxPrice)
+			filter.push(
+				this.getPriceFilter(
+					convertToNumber(dto.minPrice),
+					convertToNumber(dto.maxPrice)
+				)
+			)
+
+		if (dto.categoryId) filter.push(this.getCategoryFilter(+dto.categoryId))
+
+		return filter.length
+			? {
+					AND: filter
+			  }
+			: {}
+	}
+
+	private getSortOptions(
+		sort: EnumProbuctSort
+	): Prisma.ProductOrderByWithRelationInput[] {
+		switch (sort) {
+			case EnumProbuctSort.LOW_PRICE:
+				return [{ price: 'asc' }]
+			case EnumProbuctSort.HIGH_PRICE:
+				return [{ price: 'desc' }]
+			case EnumProbuctSort.OLDEST:
+				return [{ createdAt: 'asc' }]
+			default:
+				return [{ createdAt: 'desc' }]
+		}
+	}
+
+	private getSearchTermFilter(searchTerm: string): Prisma.ProductWhereInput {
+		return {
+			OR: [
+				{
+					category: {
+						name: {
+							contains: searchTerm,
+							mode: 'insensitive'
+						}
+					}
+				},
+				{
+					name: {
+						contains: searchTerm,
+						mode: 'insensitive'
+					}
+				},
+				{
+					description: {
+						contains: searchTerm,
+						mode: 'insensitive'
+					}
+				}
+			]
+		}
+	}
+
+	private getRatingFilter(ratings: number[]): Prisma.ProductWhereInput {
+		return {
+			reviews: {
+				some: {
+					rating: {
+						in: ratings
+					}
+				}
+			}
+		}
+	}
+
+	private getCategoryFilter(categoryId: number): Prisma.ProductWhereInput {
+		return {
+			categoryId
+		}
+	}
+
+	private getPriceFilter(
+		minPrice?: number,
+		maxPrice?: number
+	): Prisma.ProductWhereInput {
+		let priceFilter: Prisma.IntFilter | undefined = undefined
+
+		if (minPrice) {
+			priceFilter = {
+				...priceFilter,
+				gte: minPrice
+			}
+		}
+
+		if (maxPrice) {
+			priceFilter = {
+				...priceFilter,
+				lte: maxPrice
+			}
+		}
+
+		return {
+			price: priceFilter
 		}
 	}
 
@@ -157,6 +231,9 @@ export class ProductService {
 
 	async update(id: number, dto: ProductDto) {
 		const { description, images, price, name, categoryId } = dto
+
+		await this.categoryService.byId(categoryId)
+
 		return this.prisma.product.update({
 			where: { id },
 			data: {

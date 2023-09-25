@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
+import { ProductService } from 'src/product/product.service'
 import { ReviewDto } from './dto/review.dto'
 import { returnReviewObject } from './return-review.object'
 
 @Injectable()
 export class ReviewService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private productService: ProductService
+	) {}
 
 	async getAll() {
 		return await this.prisma.review.findMany({
@@ -16,19 +20,9 @@ export class ReviewService {
 		})
 	}
 
-	async byId(id: number) {
-		const review = await this.prisma.review.findUnique({
-			where: { id },
-			select: returnReviewObject
-		})
-
-		if (!review) {
-			throw new Error('Review not found')
-		}
-		return review
-	}
-
 	async create(userId: number, productId: number, dto: ReviewDto) {
+		await this.productService.byId(productId)
+		
 		return this.prisma.review.create({
 			data: {
 				...dto,
