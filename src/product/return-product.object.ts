@@ -21,8 +21,8 @@ export const returnProductObject: Prisma.ProductSelect = {
 
 export const returnProductObjectFullest: Prisma.ProductSelect = {
 	...returnProductObject,
-	// reviews: {
-	// 	select: returnReviewObject
-	// },
-	// category: { select: returnCategoryObject }
+	reviews: {
+		select: returnReviewObject
+	},
+	category: { select: returnCategoryObject }
 }

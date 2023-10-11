@@ -23,7 +23,12 @@ const createProducts = async (quantity: number) => {
 						min: 2,
 						max: 6
 					})
-				}).map(() => `/uploads/${faker.number.int({min: 1, max: 5})}.jpg`),
+				}).map(() =>
+					JSON.stringify({
+						fileUrl: `/uploads/${faker.number.int({ min: 1, max: 5 })}.jpg`,
+						fileKey: `/uploads/${faker.number.int({ min: 1, max: 5 })}.jpg`
+					})
+				),
 				category: {
 					create: {
 						name: categoryName,
