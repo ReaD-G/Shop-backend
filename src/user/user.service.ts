@@ -39,7 +39,16 @@ export class UserService {
 		if (!user) {
 			throw new Error('User not found')
 		}
-		return user
+
+		return {
+			...user,
+			favorites: [
+				...user.favorites.map(favorit => ({
+					...favorit,
+					images: favorit.images.map(image => JSON.parse(image as string))
+				}))
+			]
+		}
 	}
 
 	async updateProfile(id: number, dto: UserDto) {
