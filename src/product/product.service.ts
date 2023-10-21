@@ -189,9 +189,7 @@ export class ProductService {
 		})
 
 		if (!products) throw new NotFoundException('Products not found!')
-		return products.map(product => (
-			product
-		))
+		return products.map(product => product)
 	}
 
 	async getSimilar(id: number) {
@@ -215,9 +213,7 @@ export class ProductService {
 			select: returnProductObject
 		})
 
-		return products.map(product => (
-			product
-		))
+		return products.map(product => product)
 	}
 
 	async create() {
