@@ -35,10 +35,7 @@ export class ProductService {
 		})
 
 		return {
-			products: products.map(product => ({
-				...product,
-				images: product.images.map(image => JSON.parse(image as string))
-			})),
+			products,
 			length: await this.prisma.product.count({
 				where: filters
 			})
@@ -165,10 +162,7 @@ export class ProductService {
 		if (!product) {
 			throw new NotFoundException('Product not found')
 		}
-		return {
-			...product,
-			images: product.images.map(image => JSON.parse(image as string))
-		}
+		return product
 	}
 
 	async bySlug(slug: string) {
@@ -181,10 +175,7 @@ export class ProductService {
 			throw new NotFoundException('Product not found')
 		}
 
-		return {
-			...product,
-			images: product.images.map(image => JSON.parse(image as string))
-		}
+		return product
 	}
 
 	async byCategory(categorySlug: string) {
@@ -198,10 +189,9 @@ export class ProductService {
 		})
 
 		if (!products) throw new NotFoundException('Products not found!')
-		return products.map(product => ({
-			...product,
-			images: product.images.map(image => JSON.parse(image as string))
-		}))
+		return products.map(product => (
+			product
+		))
 	}
 
 	async getSimilar(id: number) {
@@ -225,10 +215,9 @@ export class ProductService {
 			select: returnProductObject
 		})
 
-		return products.map(product => ({
-			...product,
-			images: product.images.map(image => JSON.parse(image as string))
-		}))
+		return products.map(product => (
+			product
+		))
 	}
 
 	async create() {
