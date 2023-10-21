@@ -22,7 +22,7 @@ export class ReviewService {
 
 	async create(userId: number, productId: number, dto: ReviewDto) {
 		await this.productService.byId(productId)
-		
+
 		return this.prisma.review.create({
 			data: {
 				...dto,

@@ -36,7 +36,7 @@ export class AuthService {
 
 		const user = await this.userService.byId(result.id, {
 			isAdmin: true
-		} )
+		})
 
 		const tokens = await this.issueTokens(user.id)
 
