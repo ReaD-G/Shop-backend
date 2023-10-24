@@ -1,6 +1,6 @@
 import { Controller, Delete, HttpCode, Param } from '@nestjs/common'
 
-import { Auth } from 'src/auth/decorators/auth.decorator'
+import { Auth } from '../../src/auth/decorators/auth.decorator'
 import { UploadService } from './upload.service'
 
 @Controller('upload')
