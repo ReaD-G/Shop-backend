@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { ProductDto } from 'src/product/dto/product.dto'
+import { ProductDto } from '../../src/product/dto/product.dto'
 import { PrismaService } from '../../src/prisma.service'
 
 import { Prisma } from '@prisma/client'
-import { CategoryService } from 'src/category/category.service'
-import { PaginationService } from 'src/pagination/pagination.service'
-import { convertToNumber } from 'src/utils/convert-to-number'
-import { generateSlug } from 'src/utils/generate.slug'
+import { CategoryService } from '../../src/category/category.service'
+import { PaginationService } from '../../src/pagination/pagination.service'
+import { convertToNumber } from '../../src/utils/convert-to-number'
+import { generateSlug } from '../../src/utils/generate.slug'
 import { EnumProbuctSort, GetAllProbuctDto } from './dto/get-all.product.dto'
 import {
 	returnProductObject,
