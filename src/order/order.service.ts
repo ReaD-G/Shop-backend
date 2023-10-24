@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { OrderStatus } from '@prisma/client'
 import { returnProductObject } from 'src/product/return-product.object'
-import * as YooKassa from 'yookassa'
+// import * as YooKassa from 'yookassa'
 import { PrismaService } from '../../src/prisma.service'
 import { OrderDto } from './dto/order.dto'
 import { PaymentStatusDto } from './dto/payment-status.dto'
 
-const yooKassa = new YooKassa({
-	shopId: process.env['SHOP_ID'],
-	secretKey: process.env['PAYMENT_TOKEN']
-})
+// const yooKassa = new YooKassa({
+// 	shopId: process.env['SHOP_ID'],
+// 	secretKey: process.env['PAYMENT_TOKEN']
+// })
 
 @Injectable()
 export class OrderService {
@@ -71,30 +71,30 @@ export class OrderService {
 			}
 		})
 
-		const payment = await yooKassa.createPayment({
-			amount: {
-				value: total.toFixed(2),
-				currency: 'RUB'
-			},
-			payment_method_data: {
-				type: 'bank_card'
-			},
-			confirmation: {
-				type: 'redirect',
+		// const payment = await yooKassa.createPayment({
+		// 	amount: {
+		// 		value: total.toFixed(2),
+		// 		currency: 'RUB'
+		// 	},
+		// 	payment_method_data: {
+		// 		type: 'bank_card'
+		// 	},
+		// 	confirmation: {
+		// 		type: 'redirect',
 
-				return_url: 'http://localhost:3000/thanks'
-			},
-			description: `Order #${order.id}`
-		})
+		// 		return_url: 'http://localhost:3000/thanks'
+		// 	},
+		// 	description: `Order #${order.id}`
+		// })
 
-		return payment
+		// return payment
 	}
 
 	async updateStatus(dto: PaymentStatusDto) {
-		if (dto.event === 'payment.waiting_for_capture') {
-			const payment = await yooKassa.capturePayment(dto.object.id)
-			return payment
-		}
+		// if (dto.event === 'payment.waiting_for_capture') {
+		// 	const payment = await yooKassa.capturePayment(dto.object.id)
+		// 	return payment
+		// }
 
 		if (dto.event === 'payment.succeeded') {
 			const orderId = Number(dto.object.description.split('#')[1])
