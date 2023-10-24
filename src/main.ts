@@ -1,6 +1,6 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
 import { PrismaClientExceptionFilter } from 'nestjs-prisma'
+import { AppModule } from './app.module'
 
 export interface NestConfig {
 	port: number
@@ -18,8 +18,7 @@ async function bootstrap() {
 	app.enableShutdownHooks()
 
 	// Cors
-
-	app.enableCors()
+	// app.enableCors()
 
 	const { httpAdapter } = app.get(HttpAdapterHost)
 	app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
