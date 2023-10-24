@@ -8,7 +8,7 @@ import {
 	ValidationPipe
 } from '@nestjs/common'
 import { Auth } from '../../src/auth/decorators/auth.decorator'
-import { CurrentUser } from 'src/auth/decorators/user.decorator'
+import { CurrentUser } from '../../src/auth/decorators/user.decorator'
 import { OrderDto } from './dto/order.dto'
 import { PaymentStatusDto } from './dto/payment-status.dto'
 import { OrderService } from './order.service'

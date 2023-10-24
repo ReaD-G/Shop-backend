@@ -9,7 +9,7 @@ import {
 	ValidationPipe
 } from '@nestjs/common'
 import { Auth } from '../../src/auth/decorators/auth.decorator'
-import { CurrentUser } from 'src/auth/decorators/user.decorator'
+import { CurrentUser } from '../../src/auth/decorators/user.decorator'
 import { ReviewDto } from './dto/review.dto'
 import { ReviewService } from './review.service'
 
