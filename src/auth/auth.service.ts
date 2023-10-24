@@ -8,9 +8,9 @@ import {
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@prisma/client'
 import { hash, verify } from 'argon2'
-import { PrismaService } from 'src/prisma.service'
-import { AuthDto } from './dto/auth.dto'
 import { UserService } from 'src/user/user.service'
+import { PrismaService } from '../../src/prisma.service'
+import { AuthDto } from './dto/auth.dto'
 
 @Injectable()
 export class AuthService {
