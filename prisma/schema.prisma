@@ -13,18 +13,37 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
-  email    String @unique
-  password String
-
   isAdmin Boolean @default(false) @map("is_admin")
 
-  name       String @unique
-  avatarPath String @default("/uploads/defailt-avatar.png") @map("avatar_path")
-  phone      String @default("")
+  name            String  @unique
+  firstName       String
+  lastName        String
+  avatarPath      String  @default("/uploads/defailt-avatar.png") @map("avatar_path")
+  phone           String  @unique
+  twoFA           Boolean @default(false)
+  Otp             Otp[]
+  isPhoneVerified Boolean @default(false)
 
   orders    Order[]
   reviews   Review[]
   favorites Product[]
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  owner     User     @relation(fields: [userId], references: [id])
+  userId    Int
+  code      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime @db.Timestamp(5)
+  useCase   UseCase
+}
+
+enum UseCase {
+  LOGIN
+  D2FA
+  PHV
 }
 
 model Product {

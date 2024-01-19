@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module } from '@nestjs/common'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { path } from 'app-root-path'
 import { AppController } from './app.controller'
@@ -13,6 +13,7 @@ import { ReviewModule } from './review/review.module'
 import { StatisticsModule } from './statistics/statistics.module'
 import { UploadModule } from './upload/upload.module'
 import { UserModule } from './user/user.module'
+import { LoggerMiddleware } from './utils/logger'
 
 @Module({
 	imports: [
@@ -54,4 +55,8 @@ import { UserModule } from './user/user.module'
 	controllers: [AppController],
 	providers: [AppService]
 })
-export class AppModule {}
+export class AppModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(LoggerMiddleware).forRoutes('*')
+	}
+}

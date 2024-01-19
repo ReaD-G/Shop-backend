@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../src/prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class StatisticsService {
@@ -17,19 +17,19 @@ export class StatisticsService {
 
 		return [
 			{
-				name: 'Orders',
+				name: 'Заказы',
 				value: ordersCount
 			},
 			{
-				name: 'Reviews',
+				name: 'Отзывы',
 				value: reviewsCount
 			},
 			{
-				name: 'Users',
+				name: 'Пользователи',
 				value: usersCount
 			},
 			{
-				name: 'Total amount',
+				name: 'Общая сумма',
 				value: totalAmount._sum.total || 0
 			}
 		]

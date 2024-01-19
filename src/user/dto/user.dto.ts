@@ -1,10 +1,11 @@
 import { IsEmail, IsOptional, IsString } from 'class-validator'
 
 export class UserDto {
-	@IsEmail()
-	email: string
-
 	@IsOptional()
+	@IsEmail()
+	email?: string
+
+	@IsOptional()ckout 
 	@IsString()
 	password?: string
 
@@ -16,7 +17,6 @@ export class UserDto {
 	@IsString()
 	avatarPath: string
 
-	@IsOptional()
 	@IsString()
-	phone?: string
+	phone: string
 }

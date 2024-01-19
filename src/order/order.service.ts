@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { OrderStatus } from '@prisma/client'
-import { returnProductObject } from 'src/product/return-product.object'
+import { returnProductObject } from '../../src/product/return-product.object'
 // import * as YooKassa from 'yookassa'
-import { PrismaService } from '../../src/prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { OrderDto } from './dto/order.dto'
 import { PaymentStatusDto } from './dto/payment-status.dto'
 

@@ -4,8 +4,7 @@ import {
 	NotFoundException
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
-import { hash } from 'argon2'
-import { PrismaService } from '../../src/prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { UserDto } from './dto/user.dto'
 import { returnUserObject } from './return-user.object'
 
@@ -44,8 +43,8 @@ export class UserService {
 	}
 
 	async updateProfile(id: number, dto: UserDto) {
-		const isSameUser = await this.prisma.user.findUnique({
-			where: { email: dto.email }
+		const isSameUser = await this.prisma.user.findFirst({
+			where: { phone: dto.phone }
 		})
 
 		if (!isSameUser && id !== isSameUser.id) {
@@ -57,8 +56,8 @@ export class UserService {
 		return this.prisma.user.update({
 			where: { id },
 			data: {
-				...dto,
-				password: dto.password ? await hash(dto.password) : user.password
+				...dto
+				// password: dto.password ? await hash(dto.password) : user.password
 			}
 		})
 	}

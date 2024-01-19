@@ -16,11 +16,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 5.4.2
+ * Prisma Client JS version: 5.5.2
  * Query Engine version: ac9d7041ed77bcc8a8dbd2ab6616b39013829574
  */
 Prisma.prismaVersion = {
-  client: "5.4.2",
+  client: "5.5.2",
   engine: "ac9d7041ed77bcc8a8dbd2ab6616b39013829574"
 }
 
@@ -111,12 +111,24 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  email: 'email',
-  password: 'password',
   isAdmin: 'isAdmin',
   name: 'name',
+  firstName: 'firstName',
+  lastName: 'lastName',
   avatarPath: 'avatarPath',
-  phone: 'phone'
+  phone: 'phone',
+  twoFA: 'twoFA',
+  isPhoneVerified: 'isPhoneVerified'
+};
+
+exports.Prisma.OtpScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  code: 'code',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  expiresAt: 'expiresAt',
+  useCase: 'useCase'
 };
 
 exports.Prisma.ProductScalarFieldEnum = {
@@ -183,6 +195,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.UseCase = exports.$Enums.UseCase = {
+  LOGIN: 'LOGIN',
+  D2FA: 'D2FA',
+  PHV: 'PHV'
+};
+
 exports.OrderStatus = exports.$Enums.OrderStatus = {
   PENDING: 'PENDING',
   PAYED: 'PAYED',
@@ -192,6 +210,7 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Otp: 'Otp',
   Product: 'Product',
   Category: 'Category',
   Review: 'Review',
